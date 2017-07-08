@@ -1,4 +1,4 @@
-This is the yelpcamp code. like yelp but for campgrounds.
+This is the yelpcamp code, like yelp but for campgrounds.
 
 This isn't my original creation, was part of colt steele's "The Web Developer Bootcamp" course on Udemy [https://www.udemy.com/the-web-developer-bootcamp/](https://www.udemy.com/the-web-developer-bootcamp/)
 

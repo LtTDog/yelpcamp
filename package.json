@@ -1,0 +1,23 @@
+{
+  "name": "yelpcamp",
+  "version": "1.0.0",
+  "description": "This is the yelpcamp code, like yelp but for campgrounds.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LtTDog/yelpcamp.git"
+  },
+  "author": "Terrence Drumm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LtTDog/yelpcamp/issues"
+  },
+  "homepage": "https://github.com/LtTDog/yelpcamp#readme",
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.3"
+  }
+}
