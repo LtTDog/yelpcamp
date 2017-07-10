@@ -11,7 +11,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 let campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description: String
 });
 
 let Campground = mongoose.model("Campground", campgroundSchema);
@@ -25,7 +26,7 @@ app.get("/campgrounds", function(req, res){
         if(err){
             console.log(err);
         } else {
-            res.render("campgrounds", {campgrounds: allCampgrounds});
+            res.render("index", {campgrounds: allCampgrounds});
         }
     });
 });
@@ -33,7 +34,8 @@ app.get("/campgrounds", function(req, res){
 app.post("/campgrounds", function(req, res){
    let name = req.body.name;
    let image = req.body.image;
-   let newCampground = {name: name, image: image}
+   let desc = req.body.description;
+   let newCampground = {name: name, image: image, description: desc}
    Campground.create(newCampground, function(err, newlyCreated){
       if(err) {
           console.log(err);
@@ -45,6 +47,17 @@ app.post("/campgrounds", function(req, res){
 
 app.get("/campgrounds/new", function(req, res){
    res.render("new.ejs");
+});
+
+
+app.get("/campgrounds/:id", function(req, res) {
+   Campground.findById(req.params.id, function(err, foundCampground){
+      if(err) {
+          console.log
+      } else {
+          res.render("show", {campground: foundCampground});
+      }
+   });
 });
 
 app.listen(process.env.PORT, process.env.IP, function(){
