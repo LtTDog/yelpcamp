@@ -4,18 +4,11 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const Campground = require("./models/campground")
 
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-
-let campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-let Campground = mongoose.model("Campground", campgroundSchema);
 
 app.get("/", function(req, res){
     res.render("landing");
@@ -35,6 +28,7 @@ app.post("/campgrounds", function(req, res){
    let name = req.body.name;
    let image = req.body.image;
    let desc = req.body.description;
+   
    let newCampground = {name: name, image: image, description: desc}
    Campground.create(newCampground, function(err, newlyCreated){
       if(err) {
