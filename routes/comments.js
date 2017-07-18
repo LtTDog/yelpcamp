@@ -3,18 +3,20 @@
 const   express = require("express"),
         router  = express.Router({mergeParams: true}),
         Campground  = require("../models/campground"),
-        Comment  = require("../models/comment");
+        Comment  = require("../models/comment"),
+        middleware  = require("../middleware");
     
 //==================
 // Comments routes
 //==================
 
 //new
-router.get("/new", isLoggedIn,function(req, res) {
+router.get("/new", middleware.isLoggedIn,function(req, res) {
     // find campground by id and pass
     Campground.findById(req.params.id, function(err, campground){
         if(err){
             console.log(err);
+            req.flash("error", "Something went wrong");
             res.redirect("back");
         } else {
             res.render("comments/new", {campground: campground});        
@@ -25,16 +27,18 @@ router.get("/new", isLoggedIn,function(req, res) {
 });
 
 //create
-router.post("/", isLoggedIn, function(req, res) {
+router.post("/", middleware.isLoggedIn, function(req, res) {
     //lookup campground using id
     Campground.findById(req.params.id, function(err, campground) {
         if(err){
             console.log(err);
+            req.flash("error", "Campground not found");
             res.redirect("/campgrounds");
         } else {
             Comment.create(req.body.comment, function(err, comment){
                 if (err) {
                     console.log(err);
+                    req.flash("error", "Something went wrong");
                     res.redirect("back");
                 } else {
                     //add username and id to comment
@@ -44,6 +48,7 @@ router.post("/", isLoggedIn, function(req, res) {
                     comment.save();
                     campground.comments.push(comment);
                     campground.save();
+                    req.flash("success", "Successfully added comment");
                     res.redirect('/campgrounds/' + campground._id);
                 }
             });
@@ -55,7 +60,7 @@ router.post("/", isLoggedIn, function(req, res) {
 });
 
 // edit
-router.get("/:comment_id/edit", checkCommentOwnership, function(req, res) {
+router.get("/:comment_id/edit", middleware.checkCommentOwnership, function(req, res) {
     Comment.findById(req.params.comment_id, function(err, foundComment) {
         if (err) {
             res.redirect("back");
@@ -66,7 +71,7 @@ router.get("/:comment_id/edit", checkCommentOwnership, function(req, res) {
 });
 
 // update
-router.put("/:comment_id", checkCommentOwnership, function(req, res){
+router.put("/:comment_id", middleware.checkCommentOwnership, function(req, res){
    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
        if (err) {
            res.redirect("back");
@@ -77,45 +82,15 @@ router.put("/:comment_id", checkCommentOwnership, function(req, res){
 });
 
 // Destroy
-router.delete("/:comment_id", checkCommentOwnership, function(req, res) {
+router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, res) {
   Comment.findByIdAndRemove(req.params.comment_id, function(err){
       if(err){
           res.redirect("back");
       } else {
+          req.flash("success", "Comment Deleted");
           res.redirect("/campgrounds/" + req.params.id);
       }
   });
 });
 
-function checkCommentOwnership(req, res, next){
-        //is user logged in?
-            //does user own the campground?
-            // otherwise, redirect
-        // if not, redirect
-    if (req.isAuthenticated()) {
-        Comment.findById(req.params.comment_id, function(err, foundComment){
-            if(err){
-                res.redirect("back");
-            } else {
-                if(foundComment.author.id.equals(req.user._id)){
-                    next();            
-                } else {
-                    res.redirect("back");
-                }
-            }
-        });    
-    } else {
-        res.redirect("back");
-    }
-}
-
-
 module.exports = router;
-
-//middleware
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
