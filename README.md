@@ -8,4 +8,6 @@ I've made a few minor modifications like using strict and block scope variables.
 
 Some issues I recognize that would need to be address, if this was a real applications.  
 
-Its vulnerable to an [csrf](https://github.com/pillarjs/understanding-csrf) attack and a few others. [Express Best Practices](https://expressjs.com/en/advanced/best-practice-security.html)
+It's vulnerable to an [csrf](https://github.com/pillarjs/understanding-csrf) attack and a few others. 
+
+[Express Best Practices](https://expressjs.com/en/advanced/best-practice-security.html)
